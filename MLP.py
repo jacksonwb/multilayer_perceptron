@@ -4,7 +4,7 @@
 #                                                                              #
 #  By - jacksonwb                                                              #
 #  Created: Tuesday October 2019 11:43:21 am                                   #
-#  Modified: Tuesday Oct 2019 12:24:50 pm                                      #
+#  Modified: Tuesday Oct 2019 3:23:42 pm                                       #
 #  Modified By: jacksonwb                                                      #
 # ---------------------------------------------------------------------------- #
 
@@ -12,8 +12,10 @@ import argparse
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
+import pickle
 import src.MultiLayerNet as MLN
 import matplotlib.pyplot as plt
+import src.MinMaxScaler as MMS
 
 def parse():
 	parser = argparse.ArgumentParser()
@@ -28,6 +30,14 @@ def get_data(input):
 		print('MLP:', e)
 		exit(1)
 	return data
+
+def save_model(mln_model, scaler_model, model_name='MLP_model.pkl'):
+	with open(model_name, mode='wb') as model_file:
+		pickle.dump((scaler_model, mln_model), model_file)
+
+def load_model(model_name='MLP_model.pkl'):
+	with open(model_name, 'rb') as model_file:
+		return pickle.load(model_file)
 
 if __name__ == '__main__':
 	args = parse()
@@ -48,15 +58,20 @@ if __name__ == '__main__':
 	print('Number of features:', len(X.columns))
 
 	net = MLN.Network()
+	scaler = MMS.MinMaxScaler()
 
 	if args.predict:
-		net.load_model(args.predict)
-		x_pred = X.to_numpy()
+		model = load_model()
+		net.load(model[0])
+		scaler.load(model[1])
+		x_pred = scaler.transform(X.to_numpy())
 		y_pred = net.predict(x_pred).argmax(axis=1).astype(object)
 		y_pred[y_pred == 0] = 'B'
 		y_pred[y_pred == 1] = 'M'
 		print(y_pred)
 	else:
+		scaler.fit(X.to_numpy())
+		x_scaled = scaler.transform(X.to_numpy())
 		net.add_layer('connected', 24, 100)
 		net.add_layer('ReLU', 100, 0)
 		net.add_layer('connected', 100, 100)
@@ -64,11 +79,11 @@ if __name__ == '__main__':
 		net.add_layer('connected', 100, 100)
 		net.add_layer('ReLU', 100, 0),
 		net.add_layer('connected', 100, 2)
-		x_train, x_test, y_train, y_test = train_test_split(X.to_numpy(), y.to_numpy().astype('int'), test_size=0.2)
-		net.train(x_train, y_train, 0.1, 5000, reg=0.001, mu=0.01,
+		x_train, x_test, y_train, y_test = train_test_split(x_scaled, y.to_numpy().astype('int'), test_size=0.2)
+		net.train(x_train, y_train, 0.1, 6000, reg=0.001, mu=0.01,
 			validate=True, validate_x = x_test, validate_y = y_test,
-			decay=0.001)
-		net.save_model()
+			decay=0.0001)
+		save_model(scaler.save(), net.save())
 
 		y_predict = net.predict(x_test).argmax(axis=1)
 		correct = len(y_predict[y_predict == y_test])

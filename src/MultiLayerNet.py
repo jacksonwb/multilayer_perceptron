@@ -4,7 +4,7 @@
 #                                                                              #
 #  By - jacksonwb                                                              #
 #  Created: Tuesday October 2019 11:43:06 am                                   #
-#  Modified: Tuesday Oct 2019 12:16:25 pm                                      #
+#  Modified: Tuesday Oct 2019 3:21:06 pm                                       #
 #  Modified By: jacksonwb                                                      #
 # ---------------------------------------------------------------------------- #
 
@@ -120,9 +120,7 @@ class Network:
 				eta_val = eta * np.exp(-decay * i)
 	def predict(self, x):
 		return self.forward(x)
-	def save_model(self, model_name='MLN_model.pkl'):
-		with open(model_name, mode='wb') as model_file:
-			pickle.dump(self.layers, model_file)
-	def load_model(self, model_name='MLN_model.pkl'):
-		with open(model_name, 'rb') as model_file:
-			self.layers = pickle.load(model_file)
+	def save(self):
+		return self.layers
+	def load(self, model):
+		self.layers = model
