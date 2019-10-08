@@ -51,6 +51,13 @@ net.add_layer('connected', 100, 100)
 net.add_layer('ReLU', 100, 0)
 net.add_layer('connected', 100, 2)
 	# declare a fully connected output layer with two output choices
+
+net.train(x, y, learning_rate, epochs,
+	reg=l2_regularization_amount, # optional parameters
+	mu=nesterov_hyperparameter,
+	validate=True,                # optionally test on validation set
+	validate_x=x_validation_data,
+	validate_y=y_validation_data)
 ```
 
 By default the final output layer passes through a softmax function to normalize the output logodds.
