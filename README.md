@@ -3,7 +3,9 @@ A simple declarative neural net with learning rate annealing, L2 regularization,
 The purpose of this project was to fully understand what is happening in fully connected neural nets through implementation. The neural net was developed and tested on a generated toy dataset as well as for classification of benign or malignant growth on fine needle aspirated biopsy data from the University of Wisconsin.
 Jupyter notebooks are used to visualize data and demonstrate classification with the neural net. An executable python script is also included to train and predict on the biopsy data from the command line. This method can be used to save the trained models.
 
-<img src="img/img.png" alt="Neural Net Classifier" width="400"/>
+<p align="center">
+	<img src="img/img.png" alt="Neural Net Classifier" width="400" />
+</p>
 
 ## Toy Data
 A basic demonstration of classification on toy data can be seen at:
