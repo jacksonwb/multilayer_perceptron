@@ -17,6 +17,9 @@ A demonstration of classification of tissue data can be seen at:
 
 [Tissue Data Demonstration Notebook](multilayer_perceptron_fine_needle.ipynb)
 
+## Setup
+`pip install -r requirements.txt`
+
 ## Usage
 When using the executable the model can be trained on data:
 
